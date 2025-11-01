@@ -54,7 +54,7 @@ BEGIN_APP_DECLARATION(TeapotExample)
     float aspect;
 END_APP_DECLARATION()
 
-DEFINE_APP(TeapotExample, "Teapot Rendering")
+DEFINE_APP(TeapotExample, "Teapot Rendering (M, (R)eset, (I)nner (K), (O)uter (L)")
 
 void TeapotExample::Initialize(const char * title)
 {
