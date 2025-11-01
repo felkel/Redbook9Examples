@@ -27,7 +27,7 @@ BEGIN_APP_DECLARATION(KeyPressExample)
     void OnKey(int key, int scancode, int action, int mods);
 END_APP_DECLARATION()
 
-DEFINE_APP(KeyPressExample, "Key Press Example")
+DEFINE_APP(KeyPressExample, "Key Press Example - M line/fill")
 //----------------------------------------------------------------------------
 //
 // init
@@ -71,6 +71,7 @@ void KeyPressExample::OnKey(int key, int scancode, int action, int mods)
         switch (key)
         {
             case GLFW_KEY_M:
+            case GLFW_KEY_SPACE:
                 {
                     static GLenum  mode = GL_FILL;
 
