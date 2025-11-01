@@ -57,12 +57,12 @@ void ViewportArrayApplication::Initialize(const char * title)
         "#version 410\n"
         "\n"
         "layout (triangles, invocations = 4) in;\n"
-        "layout (triangle_strip, max_vertices = 3) out;\n"
+        "layout (triangle_strip, max_vertices = 3) out;\n"  // triangles to triangles
         "\n"
-        "uniform mat4 model_matrix[4];\n"
+        "uniform mat4 model_matrix[4];\n"  // 4 matrices for 4 viewports
         "uniform mat4 projection_matrix;\n"
         "\n"
-        "in vec3 vs_normal[];\n"
+        "in vec3 vs_normal[];\n" // 3 normals for vertices of the triangle
         "\n"
         "out vec4 gs_color;\n"
         "out vec3 gs_normal;\n"
@@ -77,7 +77,7 @@ void ViewportArrayApplication::Initialize(const char * title)
         "\n"
         "void main(void)\n"
         "{\n"
-        "    for (int i = 0; i < gl_in.length(); i++)\n"
+        "    for (int i = 0; i < gl_in.length(); i++)\n" // three vertices
         "    {\n"
         "        gl_ViewportIndex = gl_InvocationID;\n"
         "        gs_color = colors[gl_InvocationID];\n"
@@ -98,7 +98,7 @@ void ViewportArrayApplication::Initialize(const char * title)
         "\n"
         "void main(void)\n"
         "{\n"
-        "    color = gs_color * (0.2 + pow(abs(gs_normal.z), 4.0)) + vec4(1.0, 1.0, 1.0, 0.0) * pow(abs(gs_normal.z), 37.0);\n"
+        "    color = gs_color * (0.2 + pow(abs(gs_normal.z), 4.0)) + vec4(1.0, 1.0, 1.0, 0.0) * pow(abs(gs_normal.z), 37.0);\n" // diffuse + specular
         "}\n";
 
     vglAttachShaderSource(prog, GL_VERTEX_SHADER, vertex_shader_source);
@@ -128,7 +128,7 @@ void ViewportArrayApplication::Display(bool auto_redraw)
     glUseProgram(prog);
 
     vmath::mat4 p(vmath::frustum(-1.0f, 1.0f, aspect, -aspect, 1.0f, 5000.0f));
-    vmath::mat4 m[4];
+    vmath::mat4 m[4]; // model matrices for 4 viewports
 
     for (int i = 0; i < 4; i++)
     {
@@ -139,7 +139,7 @@ void ViewportArrayApplication::Display(bool auto_redraw)
                            vmath::translate(0.0f, -80.0f, 0.0f));
     }
 
-    glUniformMatrix4fv(model_matrix_pos, 4, GL_FALSE, m[0]);
+    glUniformMatrix4fv(model_matrix_pos, 4, GL_FALSE, m[0]); // count = 4  => send 4 matrices starting from &m[0]
     glUniformMatrix4fv(projection_matrix_pos, 1, GL_FALSE, p);
 
     glEnable(GL_CULL_FACE);
@@ -164,7 +164,12 @@ void ViewportArrayApplication::Resize(int width, int height)
     const float wot = float(width) * 0.5f;
     const float hot = float(height) * 0.5f;
 
-    glViewportIndexedf(0, 0.0f, 0.0f, wot, hot);
+    //  -------
+    // | 2 | 3 |
+    // | 0 | 1 |
+    //  -------
+
+    glViewportIndexedf(0, 0.0f, 0.0f, wot, hot);  // lower left corner + width + height
     glViewportIndexedf(1, wot, 0.0f, wot, hot);
     glViewportIndexedf(2, 0.0f, hot, wot, hot);
     glViewportIndexedf(3, wot, hot, wot, hot);
